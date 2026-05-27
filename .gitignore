@@ -1,0 +1,64 @@
+# ===== Build outputs =====
+build/
+out/
+**/bin/
+**/obj/
+
+# ===== Visual Studio =====
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vcxproj.filters
+*.vcxproj.user
+
+# ===== CMake =====
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# ===== Compiled binaries / debug =====
+*.exe
+*.dll
+*.pdb
+*.lib
+*.exp
+*.obj
+*.ilk
+*.idb
+*.rsp
+*.tlog
+*.cache
+*.log
+
+# ===== Runtime artifacts =====
+crash_log.txt
+ui/Scripts/
+ui/Lua.xshd
+**/Senator Executor.exe
+**/Senator.dll
+
+# ===== OS / IDE =====
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# ===== NuGet / package caches =====
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ===== Allow vendored Luau source =====
+!third_party/luau/
