@@ -51,6 +51,7 @@ Thumbs.db
 *.swo
 .idea/
 .vscode/
+.claude/
 
 # ===== NuGet / package caches =====
 packages/

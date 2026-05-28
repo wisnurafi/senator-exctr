@@ -130,3 +130,27 @@ target_include_directories(Senator PRIVATE
     ${zstd_SOURCE_DIR}/lib/common
     ${blake3_SOURCE_DIR}/c
 )
+
+# ---------------------------------------------------------------------------
+# Senator.Loader — small DLL injected into RobloxPlayerBeta.exe via
+# LoadLibraryW. Phase 1: heartbeat only. Phase 2: in-process Lua exec.
+# ---------------------------------------------------------------------------
+add_library(Senator.Loader SHARED loader/loader.cpp)
+target_compile_definitions(Senator.Loader PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX)
+set_target_properties(Senator.Loader PROPERTIES
+    OUTPUT_NAME "Senator.Loader"
+    LINKER_LANGUAGE CXX
+)
+target_link_libraries(Senator.Loader PRIVATE kernel32 user32)
+
+# ---------------------------------------------------------------------------
+# loader_test — standalone harness for the injector. Lets us point at any
+# x64 process to falsify "loader broken" vs "Hyperion blocking".
+# ---------------------------------------------------------------------------
+add_executable(loader_test
+    tools/loader_test.cpp
+    src/syscalls/syscalls.asm
+)
+target_compile_definitions(loader_test PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX _UNICODE UNICODE)
+target_include_directories(loader_test PRIVATE src include)
+target_link_libraries(loader_test PRIVATE kernel32 user32 ws2_32)

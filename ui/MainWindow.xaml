@@ -534,28 +534,28 @@
             </Grid>
 
             <!-- ============ NOTIFICATION ============ -->
-            <Canvas HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,22,46" Panel.ZIndex="100">
-                <Border x:Name="NotificationBox"
-                        Background="{StaticResource BgPanel}" BorderBrush="{StaticResource Cyan}" BorderThickness="1"
-                        CornerRadius="2" Padding="18,12" MinWidth="220" Visibility="Collapsed">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="3" Opacity="0.5"/>
-                    </Border.Effect>
-                    <StackPanel Orientation="Horizontal">
-                        <Path x:Name="NotificationIcon"
-                              Data="M 8,2 A 6,6 0 1 1 7.9,2.1 Z M 6,8 L 8,10 L 12,5"
-                              Stroke="{StaticResource Cyan}" StrokeThickness="1.8"
-                              Stretch="Uniform" Width="14" Height="14"
-                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                              VerticalAlignment="Center" Margin="0,0,12,0"/>
-                        <TextBlock x:Name="NotificationText" Text="Notification"
-                                   Foreground="{StaticResource TextHi}"
-                                   FontFamily="Consolas, Courier New, monospace"
-                                   FontWeight="SemiBold" FontSize="12"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-            </Canvas>
+            <Border x:Name="NotificationBox"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Margin="0,0,22,46" Panel.ZIndex="100"
+                    Background="{StaticResource BgPanel}" BorderBrush="{StaticResource Cyan}" BorderThickness="1"
+                    CornerRadius="2" Padding="18,12" MinWidth="220" Visibility="Collapsed">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="22" ShadowDepth="3" Opacity="0.5"/>
+                </Border.Effect>
+                <StackPanel Orientation="Horizontal">
+                    <Path x:Name="NotificationIcon"
+                          Data="M 8,2 A 6,6 0 1 1 7.9,2.1 Z M 6,8 L 8,10 L 12,5"
+                          Stroke="{StaticResource Cyan}" StrokeThickness="1.8"
+                          Stretch="Uniform" Width="14" Height="14"
+                          StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                          VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBlock x:Name="NotificationText" Text="Notification"
+                               Foreground="{StaticResource TextHi}"
+                               FontFamily="Consolas, Courier New, monospace"
+                               FontWeight="SemiBold" FontSize="12"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
         </Grid>
     </Border>
 </Window>

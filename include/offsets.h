@@ -3,7 +3,7 @@
 
 // Roblox Offsets
 // Source: rbxoffsets.xyz
-// Roblox Version: version-4b6315bf1f0a4dbb
+// Roblox Version: version-2b1721d47abf49aa
 //
 // WARNING: These offsets break on every Roblox update.
 
@@ -112,7 +112,7 @@ namespace offsets {
         inline constexpr uintptr_t Health               = 0x194;
         inline constexpr uintptr_t HipHeight            = 0x1A0;
         inline constexpr uintptr_t HumanoidDisplayName  = 0xD0;
-        inline constexpr uintptr_t HumanoidState        = 0x8A0;
+        inline constexpr uintptr_t HumanoidState        = 0x8A8;
         inline constexpr uintptr_t HumanoidStateId      = 0x20;
         inline constexpr uintptr_t JumpPower            = 0x1B0;
         inline constexpr uintptr_t MaxHealth            = 0x1B4;
@@ -225,12 +225,12 @@ namespace offsets {
     namespace Pointer {
         inline constexpr uintptr_t DataModelDeleterPointer = 0x7F6C230;
         inline constexpr uintptr_t FFlagList               = 0x7C07098;
-        inline constexpr uintptr_t FakeDataModelPointer    = 0x7868A68;
-        inline constexpr uintptr_t JobsPointer             = 0x7F7C478;
+        inline constexpr uintptr_t FakeDataModelPointer    = 0x74F6758;
+        inline constexpr uintptr_t JobsPointer             = 0x7BFE988;
         inline constexpr uintptr_t MouseSensitivity        = 0x7FEA7D0;
         inline constexpr uintptr_t PlayerConfigurer        = 0x7F49728;
-        inline constexpr uintptr_t TaskScheduler           = 0x7F7C478;
-        inline constexpr uintptr_t VisualEnginePointer     = 0x7F52CF0;
+        inline constexpr uintptr_t TaskScheduler           = 0x7BFE988;
+        inline constexpr uintptr_t VisualEnginePointer     = 0x7BD51F8;
     }
 
     namespace Primitive {
@@ -324,5 +324,4 @@ namespace offsets {
         inline constexpr uintptr_t Gravity        = 0x210;
         inline constexpr uintptr_t PrimitiveList  = 0x280;
     }
-
-}
+} // namespace offsets

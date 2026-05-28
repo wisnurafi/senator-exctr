@@ -553,7 +553,11 @@ namespace RblxExecutorUI
                         }
                         else
                         {
-                            ShowNotification("Connect failed!", true);
+                            string err = RblxCore.GetLastError();
+                            string msg = string.IsNullOrEmpty(err)
+                                ? "Connect failed!"
+                                : $"Connect failed: {err}";
+                            ShowNotification(msg, true);
                             InjectionStatus.Text = "FAILED";
                             InjectionStatus.Foreground = new SolidColorBrush(Color.FromRgb(255, 61, 127));
                         }

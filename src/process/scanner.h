@@ -130,7 +130,8 @@ public:
 
         NTSTATUS status = syscall::NtOpenProcess(
             &hProcess,
-            PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION | PROCESS_QUERY_INFORMATION,
+            PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION |
+            PROCESS_QUERY_INFORMATION | PROCESS_CREATE_THREAD,
             &oa,
             &cid
         );

@@ -52,32 +52,74 @@ namespace rblx {
     }
 
     static std::vector<uintptr_t> GetChildren(HANDLE h, uintptr_t instance) {
-        for (size_t off = 0x30; off <= 0x300; off += 8) {
-            uintptr_t containerPtr = ProcessScanner::Read<uintptr_t>(h, instance + off);
-            if (containerPtr < 0x10000 || containerPtr > 0x7FFFFFFFFFFF) continue;
-            if (containerPtr % 8 != 0) continue;
-            uintptr_t startNode = ProcessScanner::Read<uintptr_t>(h, containerPtr);
-            uintptr_t endNode = ProcessScanner::Read<uintptr_t>(h, containerPtr + 8);
-            if (startNode < 0x10000 || startNode > 0x7FFFFFFFFFFF) continue;
-            if (endNode < startNode) continue;
-            size_t byteRange = (endNode + 1) - startNode;
-            if (byteRange > 0xFFFFFF) continue;
-            size_t nodeCount = byteRange / 16;
-            if (nodeCount == 0 || nodeCount > 2000) continue;
-            int validCount = 0;
-            int checkCount = (int)std::min(nodeCount, (size_t)4);
-            for (int i = 0; i < checkCount; i++) {
-                uintptr_t childPtr = ProcessScanner::Read<uintptr_t>(h, startNode + i * 16);
-                if (IsValidInstance(h, childPtr)) validCount++;
+        if (!IsValidInstance(h, instance)) return {};
+
+        // Roblox uses two layouts for the children vector depending on the
+        // instance class:
+        //   A) Inline std::vector embedded in the Instance:
+        //        begin = *(instance + off)
+        //        end   = *(instance + off + 8)
+        //   B) Heap-allocated children container, accessed through a pointer:
+        //        containerPtr = *(instance + off)
+        //        begin = *containerPtr
+        //        end   = *(containerPtr + 8)
+        // Each entry in either layout is std::shared_ptr<Instance> (16 bytes;
+        // raw Instance* lives at +0).
+        constexpr size_t kEntryStride = 16;
+
+        auto readVector = [&](uintptr_t startNode, uintptr_t endNode) -> std::vector<uintptr_t> {
+            if (startNode < 0x10000 || startNode > 0x7FFFFFFFFFFF) return {};
+            if (endNode   < startNode) return {};
+            if ((startNode % 8) != 0) return {};
+
+            size_t byteRange = endNode - startNode;
+            if (byteRange == 0)               return {};
+            if (byteRange % kEntryStride != 0) return {};
+            if (byteRange > 0x100000)         return {};
+
+            size_t nodeCount = byteRange / kEntryStride;
+
+            int probeCount = (int)std::min(nodeCount, (size_t)4);
+            int valid = 0;
+            for (int i = 0; i < probeCount; i++) {
+                uintptr_t child = ProcessScanner::Read<uintptr_t>(h, startNode + i * kEntryStride);
+                if (IsValidInstance(h, child)) valid++;
             }
-            if (validCount == 0) continue;
+            if (valid == 0) return {};
+
             std::vector<uintptr_t> children;
+            children.reserve(nodeCount);
             for (size_t i = 0; i < nodeCount; i++) {
-                uintptr_t childPtr = ProcessScanner::Read<uintptr_t>(h, startNode + i * 16);
-                if (childPtr && IsValidInstance(h, childPtr)) children.push_back(childPtr);
+                uintptr_t child = ProcessScanner::Read<uintptr_t>(h, startNode + i * kEntryStride);
+                if (child && IsValidInstance(h, child)) children.push_back(child);
             }
-            if (!children.empty()) return children;
+            return children;
+        };
+
+        // Inline layout: begin/end are stored directly in the Instance.
+        {
+            uintptr_t startNode = ProcessScanner::Read<uintptr_t>(h, instance + offsets::Instance::Children);
+            uintptr_t endNode   = ProcessScanner::Read<uintptr_t>(h, instance + offsets::Instance::Children + 8);
+            auto out = readVector(startNode, endNode);
+            if (!out.empty()) return out;
         }
+
+        // Heap layout: the slot holds a pointer to a {begin,end} struct.
+        {
+            uintptr_t containerPtr = ProcessScanner::Read<uintptr_t>(h, instance + offsets::Instance::Children);
+            if (containerPtr >= 0x10000 && containerPtr <= 0x7FFFFFFFFFFF && (containerPtr % 8) == 0) {
+                uintptr_t startNode = ProcessScanner::Read<uintptr_t>(h, containerPtr);
+                uintptr_t endNode   = ProcessScanner::Read<uintptr_t>(h, containerPtr + 8);
+                auto out = readVector(startNode, endNode);
+                if (!out.empty()) return out;
+            }
+        }
+
+        // Empty children is a legitimate answer for many instance kinds (most
+        // GUI leaf nodes, scripts that haven't been parented anything, etc.).
+        // Do NOT fall back to scanning random offsets — that will latch onto
+        // unrelated memory that happens to look like a vector and cause
+        // descendant searches to wander through garbage.
         return {};
     }
 
